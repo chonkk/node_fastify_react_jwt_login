@@ -1,6 +1,6 @@
 # NOVA JWT Login
 
-React/Vite 프론트엔드와 Express/JWT 백엔드로 구성된 로그인 예제입니다.
+React/Vite 프론트엔드와 Fastify/JWT 백엔드로 구성된 로그인 예제입니다.
 
 ## 요구 사항
 

@@ -1,8 +1,8 @@
-import cors from 'cors'
-import express from 'express'
+import cors from '@fastify/cors'
+import Fastify from 'fastify'
 import jwt from 'jsonwebtoken'
 
-const app = express()
+const app = Fastify({ logger: true })
 const port = process.env.PORT || 4000
 const jwtSecret = process.env.JWT_SECRET || 'local-development-secret-change-me'
 
@@ -13,33 +13,35 @@ const demoUser = {
   password: 'nova1234',
 }
 
-app.use(cors({ origin: 'http://localhost:5173' }))
-app.use(express.json())
+await app.register(cors, { origin: 'http://localhost:5173' })
 
-app.post('/api/auth/login', (request, response) => {
+app.post('/api/auth/login', async (request, reply) => {
   const { email, password } = request.body
   if (email !== demoUser.email || password !== demoUser.password) {
-    return response.status(401).json({ message: '이메일 또는 비밀번호를 확인해주세요.' })
+    return reply.code(401).send({ message: '이메일 또는 비밀번호를 확인해주세요.' })
   }
 
   const user = { id: demoUser.id, name: demoUser.name, email: demoUser.email }
   const token = jwt.sign(user, jwtSecret, { expiresIn: '1h' })
-  return response.json({ token, user })
+  return reply.send({ token, user })
 })
 
-app.get('/api/me', (request, response) => {
+app.get('/api/me', async (request, reply) => {
   const authorization = request.headers.authorization
   const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : null
-  if (!token) return response.status(401).json({ message: '인증 토큰이 필요합니다.' })
+  if (!token) return reply.code(401).send({ message: '인증 토큰이 필요합니다.' })
 
   try {
     const user = jwt.verify(token, jwtSecret)
-    return response.json({ user })
+    return reply.send({ user })
   } catch {
-    return response.status(401).json({ message: '유효하지 않거나 만료된 토큰입니다.' })
+    return reply.code(401).send({ message: '유효하지 않거나 만료된 토큰입니다.' })
   }
 })
 
-app.listen(port, () => {
-  console.log(`NOVA API listening on http://localhost:${port}`)
-})
+try {
+  await app.listen({ port, host: '0.0.0.0' })
+} catch (error) {
+  app.log.error(error)
+  process.exit(1)
+}
