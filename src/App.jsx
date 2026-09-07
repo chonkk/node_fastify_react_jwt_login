@@ -16,7 +16,7 @@ function FieldIcon({ type }) {
 function App() {
   const [email, setEmail] = useState('demo@nova.io')
   const [password, setPassword] = useState('nova1234')
-  const [remember, setRemember] = useState(true)
+  const [remember, setRemember] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
