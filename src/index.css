@@ -1,0 +1,4 @@
+:root { --display: 'Trebuchet MS', 'Malgun Gothic', sans-serif; font-family: var(--display); color: #243129; background: #f5f3ec; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
